@@ -14,11 +14,17 @@ não recíprocas, com links para você revisar manualmente.
 No terminal normal do Ubuntu, execute:
 
 ```bash
-bash "$HOME/instafollowcheck/iniciar.sh" SEU_USUARIO firefox
+bash "$HOME/instafollowcheck/iniciar.sh"
 ```
 
-Primeiro entre na conta `SEU_USUARIO` pelo navegador escolhido e conclua as
-verificações do Instagram.
+O iniciador pergunta seu usuário do Instagram e o navegador no terminal. Digite
+o usuário sem `@`. Na primeira execução, informe o navegador em que sua conta
+já está aberta. Nas próximas, pressione Enter na pergunta do navegador para
+reutilizar a sessão salva. Também é possível passar ambos diretamente, por
+exemplo: `bash iniciar.sh SEU_USUARIO chrome`.
+
+Primeiro entre na conta pelo navegador escolhido e conclua as verificações do
+Instagram.
 Se o acesso estiver bloqueado, recupere-o pelo aplicativo oficial antes de executar
 qualquer comando de autenticação ou coleta. Confirmar uma tentativa de login não
 garante que uma restrição já foi removida.

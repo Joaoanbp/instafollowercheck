@@ -9,7 +9,8 @@ auth_browser="${2:-}"
 cookie_file="${3:-}"
 
 if [[ "$instagram_user" == '--help' ]]; then
-    echo 'Uso: bash iniciar.sh usuario [librewolf|firefox|chrome|chromium|brave|edge] [arquivo-de-cookies]'
+    echo 'Uso: bash iniciar.sh [usuario] [librewolf|firefox|chrome|chromium|brave|edge] [arquivo-de-cookies]'
+    echo 'Sem argumentos: pergunta o usuário e o navegador no terminal.'
     echo 'Sem navegador: reutiliza uma sessão existente; nunca pede senha do Instagram.'
     echo 'Com navegador: importa a sessão já autenticada; não pede senha do Instagram.'
     exit 0
@@ -19,12 +20,16 @@ if [[ "$EUID" -eq 0 ]]; then
     echo 'Execute como seu usuário normal: bash iniciar.sh' >&2
     exit 1
 fi
+if [[ "$#" -eq 0 && -t 0 ]]; then
+    read -r -p 'Usuário do Instagram (sem @): ' instagram_user
+    read -r -p 'Navegador [firefox|chrome|edge|librewolf|chromium|brave; Enter para sessão salva]: ' auth_browser
+fi
 if [[ ! "$instagram_user" =~ ^[a-z0-9._]{1,30}$ ]]; then
     echo 'Informe o usuário sem @, usando letras minúsculas.' >&2
     exit 1
 fi
 if [[ "$#" -gt 3 ]] || [[ -n "$auth_browser" && ! "$auth_browser" =~ ^(librewolf|firefox|chrome|chromium|brave|edge)$ ]]; then
-    echo 'Uso: bash iniciar.sh usuario [librewolf|firefox|chrome|chromium|brave|edge] [arquivo-de-cookies]' >&2
+    echo 'Uso: bash iniciar.sh [usuario] [librewolf|firefox|chrome|chromium|brave|edge] [arquivo-de-cookies]' >&2
     exit 1
 fi
 if [[ -n "$cookie_file" && ! -e "$cookie_file" && "$auth_browser" != chrome && "$auth_browser" != chromium ]]; then
