@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "instafollowcheck"
+version = "0.1.0"
+description = "Monitor local de relações do Instagram com histórico privado"
+requires-python = ">=3.10"
+dependencies = ["instaloader>=4.16,<5"]
+
+[project.scripts]
+instafollowcheck = "instafollowcheck.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
