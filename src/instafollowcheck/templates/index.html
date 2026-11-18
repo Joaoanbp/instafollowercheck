@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% block title %}Painel · InstaFollowCheck{% endblock %}
+{% block page %}dashboard{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">Painel local</p>
+    <h1>Suas relações do Instagram, <span class="gradient-text">no seu computador</span>.</h1>
+    <p class="lede">
+      Veja quem segue você, quem não segue de volta e quem deixou de seguir na janela
+      escolhida. A coleta usa uma sessão própria do Chrome; nada passa por extensões de terceiros.
+    </p>
+  </div>
+  <div class="hero-actions">
+    <button id="collect-button" class="btn btn-primary" type="button" disabled>
+      <span class="btn-dot" aria-hidden="true"></span>
+      Atualizar dados
+    </button>
+    <button id="import-button" class="btn btn-secondary" type="button">Importar exportação</button>
+  </div>
+</section>
+
+<div id="notice" class="notice" role="status" hidden></div>
+
+<section id="empty-state" class="card empty-state" hidden>
+  <div class="empty-illustration" aria-hidden="true">
+    <span class="orbit orbit-one"></span>
+    <span class="orbit orbit-two"></span>
+    <span class="empty-mark">IF</span>
+  </div>
+  <div>
+    <p class="eyebrow">Primeiro passo</p>
+    <h2>Conecte sua conta</h2>
+    <p>
+      O app abrirá uma janela do Chrome com um perfil exclusivo. Entre no Instagram uma vez
+      nessa janela; o app espera o login e continua sozinho.
+    </p>
+    <div class="inline-actions">
+      <button id="empty-connect-button" class="btn btn-primary" type="button">Conectar conta</button>
+      <button id="empty-import-button" class="btn btn-secondary" type="button">Importar exportação</button>
+    </div>
+  </div>
+</section>
+
+<section id="account-bar" class="card account-bar" hidden>
+  <div class="account-selector">
+    <label for="account-select">Conta</label>
+    <select id="account-select" class="select"></select>
+  </div>
+  <div class="account-meta">
+    <span id="account-last-collection" class="muted">Ainda sem coleta</span>
+    <span id="cooldown-hint" class="pill pill-amber" hidden></span>
+  </div>
+  <div class="account-actions">
+    <button id="new-account-button" class="btn btn-small btn-ghost" type="button">Outra conta</button>
+  </div>
+</section>
+
+<section id="job-card" class="card job-card" hidden aria-live="polite">
+  <div class="job-head">
+    <div>
+      <p class="eyebrow" id="job-stage">Coleta</p>
+      <h2 id="job-title">Abrindo o navegador…</h2>
+    </div>
+    <div class="job-actions">
+      <button id="job-cancel-button" class="btn btn-small btn-ghost" type="button">Cancelar</button>
+    </div>
+  </div>
+  <p id="job-message" class="job-message">Aguarde enquanto os dados são lidos.</p>
+  <div id="job-progress" class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+    <span id="job-progress-bar" class="progress-bar"></span>
+  </div>
+  <div class="job-foot">
+    <span id="job-counter" class="muted"></span>
+    <span id="job-hint" class="muted">O Chrome pode abrir em outra janela.</span>
+  </div>
+</section>
+
+<section id="dashboard" hidden>
+  <div class="stats-grid">
+    <button class="stat-card" type="button" data-open-kind="followers">
+      <span class="stat-label">Seguidores</span>
+      <strong class="stat-value" data-stat="followers">0</strong>
+      <span class="stat-note" data-stat-note="followers">contas seguem você</span>
+    </button>
+    <button class="stat-card" type="button" data-open-kind="following">
+      <span class="stat-label">Seguindo</span>
+      <strong class="stat-value" data-stat="following">0</strong>
+      <span class="stat-note" data-stat-note="following">contas que você segue</span>
+    </button>
+    <button class="stat-card stat-card-alert" type="button" data-open-kind="not_following_back">
+      <span class="stat-label">Não te seguem de volta</span>
+      <strong class="stat-value" data-stat="not_following_back">0</strong>
+      <span class="stat-note">relações não recíprocas</span>
+    </button>
+    <button class="stat-card stat-card-danger" type="button" data-open-kind="lost_followers">
+      <span class="stat-label">Deixaram de seguir</span>
+      <strong class="stat-value" data-stat="lost_followers">0</strong>
+      <span class="stat-note" data-stat-note="lost_followers">na janela analisada</span>
+    </button>
+  </div>
+
+  <div class="dashboard-grid">
+    <section class="card list-panel" aria-labelledby="list-title">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Listas</p>
+          <h2 id="list-title">Não te seguem de volta</h2>
+          <p id="list-subtitle" class="muted"></p>
+        </div>
+        <a id="csv-link" class="btn btn-small btn-secondary" href="#" download>Baixar CSV</a>
+      </div>
+
+      <div class="tabs" id="list-tabs" role="tablist" aria-label="Escolher lista">
+        <button class="tab" role="tab" type="button" data-kind="not_following_back">Não te seguem <span data-count="not_following_back">0</span></button>
+        <button class="tab" role="tab" type="button" data-kind="lost_followers">Deixaram de seguir <span data-count="lost_followers">0</span></button>
+        <button class="tab" role="tab" type="button" data-kind="followers">Seguidores <span data-count="followers">0</span></button>
+        <button class="tab" role="tab" type="button" data-kind="following">Seguindo <span data-count="following">0</span></button>
+        <button class="tab" role="tab" type="button" data-kind="not_followed_back">Você não segue <span data-count="not_followed_back">0</span></button>
+        <button class="tab" role="tab" type="button" data-kind="new_followers">Novos seguidores <span data-count="new_followers">0</span></button>
+        <button class="tab" role="tab" type="button" data-kind="mutual">Mútuos <span data-count="mutual">0</span></button>
+        <button class="tab" role="tab" type="button" data-kind="lost_following">Você deixou de seguir <span data-count="lost_following">0</span></button>
+        <button class="tab" role="tab" type="button" data-kind="new_following">Novos seguindo <span data-count="new_following">0</span></button>
+        <button class="tab" role="tab" type="button" data-kind="possible_soft_blocks">Possíveis soft blocks <span data-count="possible_soft_blocks">0</span></button>
+      </div>
+
+      <div class="list-tools">
+        <label class="search" for="list-search">
+          <span class="search-icon" aria-hidden="true"></span>
+          <input id="list-search" type="search" placeholder="Buscar usuário" autocomplete="off">
+        </label>
+        <span id="list-count" class="muted"></span>
+      </div>
+
+      <div id="list-body" class="people-list" aria-live="polite"></div>
+
+      <div id="list-pager" class="pager" hidden>
+        <button id="page-prev" class="btn btn-small btn-ghost" type="button">Anterior</button>
+        <span id="page-label" class="muted"></span>
+        <button id="page-next" class="btn btn-small btn-ghost" type="button">Próxima</button>
+      </div>
+    </section>
+
+    <aside class="side-column">
+      <section class="card side-card">
+        <p class="eyebrow">Janela</p>
+        <h2 id="window-title">Últimos 10 dias</h2>
+        <p id="window-summary" class="muted"></p>
+        <dl class="mini-stats">
+          <div><dt>Novos seguidores</dt><dd data-stat="new_followers">0</dd></div>
+          <div><dt>Você deixou de seguir</dt><dd data-stat="lost_following">0</dd></div>
+          <div><dt>Você não segue de volta</dt><dd data-stat="not_followed_back">0</dd></div>
+          <div><dt>Possíveis soft blocks</dt><dd data-stat="possible_soft_blocks">0</dd></div>
+        </dl>
+        <a class="text-link" href="{{ url_for('history_page') }}">Ver histórico de coletas <span aria-hidden="true">→</span></a>
+      </section>
+
+      <section id="warnings-card" class="card side-card" hidden>
+        <p class="eyebrow">Atenção</p>
+        <h2>Observações desta análise</h2>
+        <ul id="warnings-list" class="warning-list"></ul>
+      </section>
+
+      <section class="card side-card side-card-quiet">
+        <p class="eyebrow">Como funciona</p>
+        <p class="small">
+          Os deltas comparam a coleta atual com a última coleta anterior à janela. Perdas
+          aparecem na próxima coleta e não confirmam a causa: unfollow, bloqueio, exclusão
+          ou conta desativada podem produzir o mesmo resultado.
+        </p>
+        <a class="text-link" href="{{ url_for('settings_page') }}">Ajustar janela e privacidade <span aria-hidden="true">→</span></a>
+      </section>
+    </aside>
+  </div>
+</section>
+
+<dialog id="account-dialog" class="dialog">
+  <form id="account-form" class="dialog-form" method="dialog" novalidate>
+    <div class="dialog-head">
+      <p class="eyebrow">Nova conexão</p>
+      <h2>Qual conta vamos ler?</h2>
+      <p class="muted">
+        O Chrome abrirá com um perfil exclusivo do app. Faça login nessa janela quando ela
+        aparecer; sua sessão normal do navegador não é acessada nem copiada.
+      </p>
+    </div>
+    <label class="field">
+      <span>Usuário do Instagram</span>
+      <input id="account-username" name="username" type="text" inputmode="text" autocomplete="username"
+             placeholder="seu.usuario" pattern="[A-Za-z0-9._]{1,30}" maxlength="30" required>
+      <small>Sem @ e sem link. Exemplo: nome.sobrenome</small>
+    </label>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-ghost" data-close-dialog>Cancelar</button>
+      <button id="account-submit" type="submit" class="btn btn-primary">Conectar e coletar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="import-dialog" class="dialog">
+  <form id="import-form" class="dialog-form" method="dialog" enctype="multipart/form-data" novalidate>
+    <div class="dialog-head">
+      <p class="eyebrow">Modo alternativo</p>
+      <h2>Importar exportação oficial</h2>
+      <p class="muted">
+        Use “Baixar suas informações” no Instagram. Selecione o ZIP completo ou os dois
+        arquivos JSON de seguidores e seguindo juntos. O arquivo é lido só neste computador.
+      </p>
+    </div>
+    <label class="field">
+      <span>Usuário da conta exportada</span>
+      <input id="import-username" name="username" type="text" autocomplete="username"
+             placeholder="seu.usuario" pattern="[A-Za-z0-9._]{1,30}" maxlength="30" required>
+    </label>
+    <label class="field">
+      <span>Arquivo da exportação</span>
+      <input id="import-file" name="file" type="file" accept=".zip,.json,application/zip,application/json" multiple required>
+      <small>ZIP oficial ou os arquivos followers_1.json e following_1.json.</small>
+    </label>
+    <details class="advanced">
+      <summary>Opções avançadas</summary>
+      <label class="field">
+        <span>ID numérico da conta (opcional)</span>
+        <input id="import-owner-id" name="owner_id" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Ex.: 123456789">
+        <small>Ajuda a unir a exportação ao histórico da mesma conta.</small>
+      </label>
+    </details>
+    <p id="import-error" class="form-error" role="alert" hidden></p>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-ghost" data-close-dialog>Cancelar</button>
+      <button id="import-submit" type="submit" class="btn btn-primary">Importar</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="live-region" class="visually-hidden" aria-live="polite"></div>
+{% endblock %}

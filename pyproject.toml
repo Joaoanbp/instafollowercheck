@@ -4,16 +4,26 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "instafollowcheck"
-version = "0.1.0"
-description = "Monitor local de relações do Instagram com histórico privado"
+version = "0.2.0"
+description = "Painel local de seguidores do Instagram, com coleta pelo navegador"
 requires-python = ">=3.10"
-dependencies = ["instaloader>=4.16,<5"]
+dependencies = [
+    "flask>=3.1,<4",
+    "playwright>=1.55,<2",
+    "waitress>=3.0,<4",
+]
+
+[project.optional-dependencies]
+dev = ["ruff>=0.11,<1"]
 
 [project.scripts]
 instafollowcheck = "instafollowcheck.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+instafollowcheck = ["templates/*.html", "static/*"]
 
 [tool.ruff]
 line-length = 100
