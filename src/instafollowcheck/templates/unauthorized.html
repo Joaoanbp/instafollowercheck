@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Acesso local · InstaFollowCheck{% endblock %}
+{% block page %}unauthorized{% endblock %}
+{% block content %}
+<section class="card empty-state auth-state">
+  <div class="empty-illustration" aria-hidden="true">
+    <span class="orbit orbit-one"></span>
+    <span class="orbit orbit-two"></span>
+    <span class="empty-mark">IF</span>
+  </div>
+  <div>
+    <p class="eyebrow">Acesso restrito</p>
+    <h1>Este link não está autorizado</h1>
+    <p>
+      O InstaFollowCheck aceita apenas a sessão criada pelo link exibido no terminal.
+      Volte ao terminal onde o app está rodando e abra o endereço completo, com o token.
+    </p>
+    <p class="small">
+      Se o app não estiver em execução, rode <code>bash iniciar.sh</code> na pasta do projeto.
+      O servidor continua disponível somente neste computador.
+    </p>
+  </div>
+</section>
+{% endblock %}

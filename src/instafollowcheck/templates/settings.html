@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Configurações · InstaFollowCheck{% endblock %}
+{% block page %}settings{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Preferências</p>
+    <h1>Configurações</h1>
+    <p class="lede">
+      Ajuste a janela de comparação, o intervalo entre coletas e os dados guardados neste
+      computador.
+    </p>
+  </div>
+  <a class="btn btn-secondary" href="{{ url_for('index') }}">Voltar ao painel</a>
+</section>
+
+<div id="settings-notice" class="notice" role="status" hidden></div>
+
+<div class="settings-grid">
+  <section class="card settings-card">
+    <p class="eyebrow">Análise</p>
+    <h2>Janela e intervalo</h2>
+    <form id="settings-form" class="settings-form" novalidate>
+      <label class="field">
+        <span>Janela de comparação (dias)</span>
+        <input id="window-days" name="window_days" type="number" min="1" max="365" step="1" required>
+        <small>Quantos dias de histórico entram no cálculo de deixaram de seguir.</small>
+      </label>
+      <label class="field">
+        <span>Intervalo mínimo entre coletas (minutos)</span>
+        <input id="cooldown-minutes" name="cooldown_minutes" type="number" min="0" max="1440" step="1" required>
+        <small>Use 0 para desativar. O intervalo ajuda a evitar limites do Instagram.</small>
+      </label>
+      <div class="inline-actions">
+        <button id="settings-submit" class="btn btn-primary" type="submit">Salvar preferências</button>
+        <span id="settings-saved" class="muted" hidden>Salvo.</span>
+      </div>
+    </form>
+  </section>
+
+  <section class="card settings-card">
+    <p class="eyebrow">Privacidade</p>
+    <h2>Onde os dados ficam</h2>
+    <p class="small">
+      O banco SQLite, os logs e o perfil do Chrome ficam em um diretório privado do seu
+      usuário. O servidor escuta apenas em <code>127.0.0.1</code> e exige um token local.
+      Não há nuvem, telemetria ou CDN.
+    </p>
+    <div class="path-box">
+      <code id="settings-data-dir">—</code>
+      <button id="copy-path-button" class="btn btn-small btn-ghost" type="button">Copiar</button>
+    </div>
+    <div class="safety-list">
+      <p><strong>Perfil do Chrome:</strong> separado do seu navegador pessoal. O app não lê os cookies do seu perfil normal.</p>
+      <p><strong>Senha:</strong> digitada apenas na janela do Instagram, dentro do Chrome. O app não armazena sua senha.</p>
+      <p><strong>Unfollow:</strong> o app é somente leitura. Nenhuma relação é alterada.</p>
+    </div>
+  </section>
+
+  <section class="card settings-card settings-card-wide">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Contas</p>
+        <h2>Históricos neste computador</h2>
+      </div>
+      <button id="settings-new-account" class="btn btn-small btn-secondary" type="button">Adicionar conta</button>
+    </div>
+    <div id="settings-accounts" class="account-list"></div>
+  </section>
+
+  <section class="card settings-card settings-card-wide">
+    <p class="eyebrow">Limpeza</p>
+    <h2>Redefinir dados de acesso</h2>
+    <p class="small">
+      Se o Instagram pedir login repetidamente ou a janela do Chrome ficar inconsistente,
+      redefina somente o perfil do navegador. O histórico de coletas é preservado.
+      Feche a janela do Chrome aberta pelo app antes de redefinir.
+    </p>
+    <div class="inline-actions">
+      <button id="reset-browser-button" class="btn btn-secondary" type="button" disabled>Redefinir perfil do Chrome</button>
+      <span class="muted">A sessão será perdida; você precisará entrar novamente.</span>
+    </div>
+  </section>
+</div>
+
+<dialog id="settings-account-dialog" class="dialog">
+  <form id="settings-account-form" class="dialog-form" method="dialog" novalidate>
+    <div class="dialog-head">
+      <p class="eyebrow">Nova conexão</p>
+      <h2>Adicionar conta</h2>
+      <p class="muted">
+        O app abrirá uma janela do Chrome para o login desta conta. A coleta começa assim
+        que a sessão for detectada.
+      </p>
+    </div>
+    <label class="field">
+      <span>Usuário do Instagram</span>
+      <input name="username" type="text" autocomplete="username" placeholder="seu.usuario"
+             pattern="[A-Za-z0-9._]{1,30}" maxlength="30" required>
+      <small>Sem @ e sem link.</small>
+    </label>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-ghost" data-close-dialog>Cancelar</button>
+      <button type="submit" class="btn btn-primary">Conectar e coletar</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}InstaFollowCheck{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-page="{% block page %}{% endblock %}">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}" aria-label="InstaFollowCheck, painel">
+      <span class="brand-mark" aria-hidden="true">IF</span>
+      <span class="brand-text">InstaFollowCheck</span>
+    </a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a class="{% if request.path == '/' %}active{% endif %}" {% if request.path == '/' %}aria-current="page"{% endif %} href="{{ url_for('index') }}">Painel</a>
+      <a class="{% if request.path == '/history' %}active{% endif %}" {% if request.path == '/history' %}aria-current="page"{% endif %} href="{{ url_for('history_page') }}">Histórico</a>
+      <a class="{% if request.path == '/settings' %}active{% endif %}" {% if request.path == '/settings' %}aria-current="page"{% endif %} href="{{ url_for('settings_page') }}">Configurações</a>
+    </nav>
+    <span class="local-badge" title="Servidor local, sem nuvem ou extensão">local</span>
+  </header>
+  <main class="page" id="conteudo">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">
+    <span>Seus dados ficam neste computador.</span>
+    <span id="footer-data-dir" class="footer-path"></span>
+  </footer>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>

@@ -1,1 +1,3 @@
-"""Monitoramento local, somente de leitura, das relações do Instagram."""
+"""Painel local de seguidores do Instagram, com coleta pelo navegador."""
+
+__version__ = "0.2.0"

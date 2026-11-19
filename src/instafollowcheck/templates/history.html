@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Histórico · InstaFollowCheck{% endblock %}
+{% block page %}history{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Linha do tempo</p>
+    <h1>Histórico de coletas</h1>
+    <p class="lede">
+      Cada linha é um retrato completo das suas relações. As variações mostram o que mudou
+      em relação à coleta imediatamente anterior.
+    </p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('index') }}">Voltar ao painel</a>
+</section>
+
+<section class="card toolbar-card">
+  <div class="account-selector">
+    <label for="history-account">Conta</label>
+    <select id="history-account" class="select"></select>
+  </div>
+  <div id="history-meta" class="muted"></div>
+</section>
+
+<div id="history-notice" class="notice" role="status" hidden></div>
+
+<section id="history-empty" class="card empty-state compact" hidden>
+  <div>
+    <p class="eyebrow">Sem registros</p>
+    <h2>Nenhuma coleta ainda</h2>
+    <p>Volte ao painel e faça a primeira leitura para começar o histórico.</p>
+    <a class="btn btn-primary" href="{{ url_for('index') }}">Abrir painel</a>
+  </div>
+</section>
+
+<section id="history-content" class="card table-card" hidden>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th scope="col">Quando</th>
+          <th scope="col">Origem</th>
+          <th scope="col" class="numeric">Seguidores</th>
+          <th scope="col" class="numeric">Seguindo</th>
+          <th scope="col">Observação</th>
+        </tr>
+      </thead>
+      <tbody id="history-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<p class="small footnote">
+  A primeira coleta é a linha de base. Uma queda nas listas não identifica sozinha a causa:
+  unfollow, bloqueio, exclusão ou desativação podem aparecer do mesmo jeito.
+</p>
+{% endblock %}
